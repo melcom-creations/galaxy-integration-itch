@@ -1,6 +1,18 @@
 # Changelog
 
-## Version 2.1.2-64bit
+All notable changes to this plugin will be documented in this file.
+
+---
+
+## Version 2.1.3-64bit
+
+### Overview
+Fixed the startup path resolution for bundled dependencies. The plugin now resolves the local `modules` directory in a case-insensitive way, so the integration starts correctly even when the folder spelling differs between packaging and runtime.
+
+### Changed
+- **Case-insensitive module path detection:** `itch.py` now resolves the bundled dependency folder by checking `modules`, `Modules`, and the actual directory name on disk before adding it to `sys.path`.
+- **Startup import fix:** This prevents `ModuleNotFoundError` during plugin startup when bundled packages such as `galaxy` are not found because the dependency folder was not added to the Python path.
+- **Path normalization hardening:** Startup path injection now uses absolute normalized paths and duplicate-path protection, improving reliability for `from galaxy.api...` imports in edge-case runtime environments.
 
 ### Overview
 Maintenance release. Rebuilt all third-party dependencies as clean 64-bit wheels for Python 3.13 via `melcom's Galaxy Plugin Scout v1.1.14`. Removed all development and build tools that were incorrectly bundled in `/modules/`.

@@ -1,10 +1,33 @@
 import os
 import sys
 
-# Add the bundled Modules directory to sys.path so local dependencies can be imported.
-modules_dir = os.path.join(os.path.dirname(__file__), 'Modules')
-if os.path.isdir(modules_dir) and modules_dir not in sys.path:
-    sys.path.insert(0, modules_dir)
+# Add the bundled modules directory to sys.path so local dependencies can be imported.
+def _resolve_modules_dir():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    for candidate in ('modules', 'Modules'):
+        candidate_path = os.path.join(base_dir, candidate)
+        if os.path.isdir(candidate_path):
+            return candidate_path
+    try:
+        for entry in os.listdir(base_dir):
+            if entry.lower() == 'modules':
+                candidate_path = os.path.join(base_dir, entry)
+                if os.path.isdir(candidate_path):
+                    return candidate_path
+    except OSError:
+        pass
+    return os.path.join(base_dir, 'modules')
+
+
+def _normalized_path(path):
+    return os.path.normcase(os.path.normpath(os.path.abspath(path)))
+
+modules_dir = _resolve_modules_dir()
+if os.path.isdir(modules_dir):
+    normalized_sys_path = {_normalized_path(p) for p in sys.path}
+    resolved_modules_dir = os.path.abspath(modules_dir)
+    if _normalized_path(resolved_modules_dir) not in normalized_sys_path:
+        sys.path.insert(0, resolved_modules_dir)
 
 import json
 import logging
