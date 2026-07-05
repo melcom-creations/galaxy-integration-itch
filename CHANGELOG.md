@@ -14,6 +14,18 @@ Fixed the startup path resolution for bundled dependencies. The plugin now resol
 - **Startup import fix:** This prevents `ModuleNotFoundError` during plugin startup when bundled packages such as `galaxy` are not found because the dependency folder was not added to the Python path.
 - **Path normalization hardening:** Startup path injection now uses absolute normalized paths and duplicate-path protection, improving reliability for `from galaxy.api...` imports in edge-case runtime environments.
 
+### Technical Breakdown
+
+#### 1. Startup dependency path resolution
+The dependency bootstrap now resolves folder-name variants of `modules` at runtime, so packaging capitalization differences no longer break imports.
+
+#### 2. Path normalization safeguards
+Injected module paths are normalized and de-duplicated before insertion into `sys.path`, stabilizing import behavior across restarts.
+
+---
+
+## Version 2.1.2-64bit
+
 ### Overview
 Maintenance release. Rebuilt all third-party dependencies as clean 64-bit wheels for Python 3.13 via `melcom's Galaxy Plugin Scout v1.1.14`. Removed all development and build tools that were incorrectly bundled in `/modules/`.
 
