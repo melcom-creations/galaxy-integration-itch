@@ -43,81 +43,15 @@ The resulting directory structure **must** look like this:
 
 5. Start GOG Galaxy.
 
-### If the plugin folder is missing
-
-If a future ZIP archive does **not** already contain the folder
-
-```text
-itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b
-```
-
-perform the following steps:
-
-1. Open:
-
-```text
-%localappdata%\GOG.com\Galaxy\plugins\installed\
-```
-
-2. Create a new folder named exactly:
-
-```text
-itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b
-```
-
-3. Extract **all files from the ZIP archive into this newly created folder**.
-
-The final directory structure must look like this:
-
-```text
-%localappdata%\GOG.com\Galaxy\plugins\installed\
-└── itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\
-    ├── manifest.json
-    ├── itch.py
-    ├── README.md
-    └── ...
-```
-
 ---
 
 ## 🔄 Resetting the Plugin Database (Recommended)
 
 If the plugin behaves unexpectedly after an update, resetting the local plugin database is recommended.
 
-1. Open:
-
-```text
-C:\ProgramData\GOG.com\Galaxy\storage\plugins\
-```
-
-2. Locate all files beginning with:
-
-```text
-itch_
-```
-
-and ending with:
-
-```text
--storage.db
-```
-
-3. Rename each database by appending `.old` to its filename.
-
-Example:
-
-```text
-itch_xxxxxxxxx-storage.db
-```
-
-becomes
-
-```text
-itch_xxxxxxxxx-storage.db.old
-```
-
-4. Start GOG Galaxy again.
-5. Reconnect the itch.io integration if necessary.
+1. Open `C:\ProgramData\GOG.com\Galaxy\storage\plugins\` and find the files starting with `itch_` and ending in `-storage.db`.
+2. Rename each by appending `.old` (e.g. `itch_xxxxxxxxx-storage.db` -> `itch_xxxxxxxxx-storage.db.old`).
+3. Start GOG Galaxy again and reconnect the itch.io integration if necessary.
 
 ---
 
