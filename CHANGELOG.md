@@ -4,6 +4,16 @@ All notable changes to this plugin will be documented in this file.
 
 ---
 
+## Version 2.1.4-64bit
+
+### Fixed in Version 2.1.4-64bit
+
+- **Cached platform traits are read safely:** The compatibility import now supports both in-memory game data and JSON values restored from Galaxy's persistent cache.
+- **Local client database locations are resolved per operating system:** The scanner now uses valid Windows, macOS, and Linux paths without assuming that an environment variable is present.
+- **Setup window dimensions are represented correctly:** The bundled Galaxy API type definition now permits the numeric dimensions used by the authentication window.
+
+---
+
 ## Version 2.1.3-64bit
 
 ### Overview for Version 2.1.3-64bit

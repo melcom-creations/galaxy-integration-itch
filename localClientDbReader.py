@@ -13,8 +13,11 @@ from galaxy.api.types import LocalGame, Game, LicenseInfo, GameTime
 
 if sys.platform.startswith("darwin"):
     ITCH_DB_PATH = os.path.expanduser("~/Library/Application Support/itch/db/butler.db")
+elif sys.platform.startswith("win"):
+    appdata = os.getenv("APPDATA") or os.path.join(os.path.expanduser("~"), "AppData", "Roaming")
+    ITCH_DB_PATH = os.path.join(appdata, "itch", "db", "butler.db")
 else:
-    ITCH_DB_PATH = os.path.join(os.getenv("appdata"), "itch/db/butler.db")
+    ITCH_DB_PATH = os.path.expanduser("~/.config/itch/db/butler.db")
 
 
 class localClientDbReader():

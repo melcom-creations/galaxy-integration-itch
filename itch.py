@@ -220,7 +220,12 @@ class ItchIntegration(Plugin):
 
     async def get_os_compatibility(self, game_id, context):
         try:
-            compat = self.persistent_cache[str(game_id)].get("traits")
+            cached_game = self.persistent_cache[str(game_id)]
+            if isinstance(cached_game, str):
+                cached_game = json.loads(cached_game)
+            if not isinstance(cached_game, dict):
+                return None
+            compat = cached_game.get("traits", [])
             os_compat = (
                 (OSCompatibility.Windows if "p_windows" in compat else OSCompatibility(0)) |
                 (OSCompatibility.MacOS if "p_osx" in compat else OSCompatibility(0)) |
@@ -229,7 +234,7 @@ class ItchIntegration(Plugin):
             logging.debug("Compat value: %s", os_compat)
             if not os_compat == 0:
                 return os_compat
-        except KeyError:
+        except (KeyError, TypeError, json.JSONDecodeError):
             logging.error("Key not found in cache: %s", game_id)
 
     def tick(self) -> None:

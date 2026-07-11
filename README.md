@@ -28,7 +28,7 @@ The original community integration has been updated to work with the current 64-
 %localappdata%\GOG.com\Galaxy\plugins\installed\
 ```
 
-4. Extract the ZIP archive **directly into this folder**.
+1. Extract the ZIP archive **directly into this folder**.
 
 The resulting directory structure **must** look like this:
 
@@ -41,7 +41,7 @@ The resulting directory structure **must** look like this:
     └── ...
 ```
 
-5. Start GOG Galaxy.
+1. Start GOG Galaxy.
 
 ---
 
@@ -52,6 +52,23 @@ If the plugin behaves unexpectedly after an update, resetting the local plugin d
 1. Open `C:\ProgramData\GOG.com\Galaxy\storage\plugins\` and find the files starting with `itch_` and ending in `-storage.db`.
 2. Rename each by appending `.old` (e.g. `itch_xxxxxxxxx-storage.db` -> `itch_xxxxxxxxx-storage.db.old`).
 3. Start GOG Galaxy again and reconnect the itch.io integration if necessary.
+
+### 🚀 First Start and Initial Sync (Important)
+
+For a clean first run after installing or updating the plugin:
+
+1. Close GOG Galaxy.
+2. Open this folder:
+
+```text
+C:\ProgramData\GOG.com\Galaxy\storage\plugins\
+```
+
+1. If an `itch_...-storage.db` file exists there, delete it.
+2. Start GOG Galaxy.
+3. Start the itch app and keep it open.
+4. In GOG Galaxy, open the account menu (top-right) and click **Sync integrations**.
+5. Wait until sync finishes.
 
 ---
 
@@ -67,7 +84,7 @@ GOG Galaxy scans every folder inside this directory during startup. Duplicate pl
 
 **Original Plugin Author**
 Tauqua
-https://github.com/tauqua/gog-galaxy-itch.io
+[Tauqua's original itch.io integration](https://github.com/tauqua/gog-galaxy-itch.io)
 
 **64-bit Port, Setup Modernization & Continued Development**
 melcom
@@ -96,6 +113,6 @@ This project is developed and maintained by one person. Response times may vary,
 
 If you would like to report a bug or suggest an improvement, please use the contact form on my website:
 
-📩 https://melcom-creations.github.io/melcom-music/contact.html
+📩 [Contact form](https://melcom-creations.github.io/melcom-music/contact.html)
 
 Thank you for your patience and support!

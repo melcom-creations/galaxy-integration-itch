@@ -13,6 +13,8 @@ if sys.platform == 'win32':
     SYSTEM = Platform.WINDOWS
 elif sys.platform == 'darwin':
     SYSTEM = Platform.MACOS
+else:
+    SYSTEM = Platform.LINUX
 
 if SYSTEM == Platform.WINDOWS:
     AGENT_PATH = os.path.expandvars(r'%ALLUSERSPROFILE%\Battle.net\Agent')
@@ -21,8 +23,8 @@ elif SYSTEM == Platform.MACOS:
     AGENT_PATH = '/Users/Shared/Battle.net/Agent'
     CONFIG_PATH = os.path.expanduser('~/Library/Application Support/Battle.net/Battle.net.config')
 
-CLIENT_ID = "54f50216fbe24e099fd2c6274deffe9d"
-CLIENT_SECRET = "OECut7egoHvr4yiQ2xRwywIR9sZWXkhb"
+CLIENT_ID = ""
+CLIENT_SECRET = ""
 
 LOCALE = "en_US"
 REDIRECT_URI = "http://friendsofgalaxy.com"
@@ -34,6 +36,10 @@ WINDOWS_UNINSTALL_LOCATION = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninsta
 LS_REGISTER = "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
 
 REGION = ""
+
+
+
+
 
 
 
