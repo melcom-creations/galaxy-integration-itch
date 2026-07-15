@@ -4,6 +4,24 @@ All notable changes to this plugin will be documented in this file.
 
 ---
 
+## Version 2.1.5-64bit
+
+### Overview for Version 2.1.5-64bit
+
+This release fixes local itch.io games being displayed incorrectly or not at all inside GOG Galaxy. The plugin now consistently reports all locally installed games, including free titles that were never claimed through itch.io's "owned keys" mechanism.
+
+### Fixed in Version 2.1.5-64bit
+
+- **Inconsistent `game_id` types:** `localClientDbReader.get_games()` built `Game` objects with the raw integer `game_id` read from itch's local `butler.db`, while every other source (itch.io's web API, launch/game-time handling) used string ids. This mismatch prevented GOG Galaxy from reliably matching a locally installed game to its catalog entry, so titles were shown inconsistently (correct one moment, missing or blank the next). `game_id` is now always cast to `str`.
+
+- **Free/unclaimed games missing entirely from the library:** `get_owned_games()` only queried itch.io's `profile/owned-keys` endpoint, which exclusively lists games with a claimed download key. Games installed via the itch app without ever claiming a key (free downloads, jam entries, etc.) never appeared there and were therefore completely absent from Galaxy, even though they were installed and playable. `get_owned_games()` now supplements the API result with any locally installed games (sourced from `localClientDbReader.get_games()`) that aren't already covered by a claimed key, so they are reported to Galaxy with their correct title.
+
+### Known Limitation for Version 2.1.5-64bit
+
+- **Some titles still show as "Unknown game" with no cover art:** This is not caused by the plugin. GOG Galaxy's `Game` object only carries `game_id`, `game_title`, `dlcs`, and `license_info` — there is no field through which a plugin can supply cover art or box art. Box art and the "known game" catalog match come exclusively from GOG's own backend catalog service, based on its own lookup of `game_id`/title against itch.io. For some indie titles (e.g. generically named ones) this backend match simply hasn't been made yet, and the plugin has no interface to influence or correct it. Title and installed status are unaffected and display correctly regardless.
+
+---
+
 ## Version 2.1.4-64bit
 
 ### Fixed in Version 2.1.4-64bit

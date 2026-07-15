@@ -188,9 +188,32 @@ class ItchIntegration(Plugin):
                 self.lost_authentication()
                 raise
             if len(resp.get("owned_keys")) == 0:
-                return games
+                break
             self.parse_json_into_games(resp.get("owned_keys"), games, whitelist)
             page += 1
+
+        # The itch.io "owned-keys" endpoint only lists games for which a
+        # download key was claimed. Games installed via the itch app without
+        # ever claiming a key (free downloads, jam entries, etc.) never show
+        # up there, which meant they were completely missing from Galaxy even
+        # though they are installed. Add those from the local itch client
+        # database so Galaxy learns about them with a proper title.
+        known_ids = {g.game_id for g in games}
+        try:
+            local_games = await self.myLocalClientDbReader.get_games()
+        except Exception as e:
+            logging.warning(f"Could not read local itch games: {e}")
+            local_games = []
+
+        for local_game in local_games:
+            if local_game.game_id in known_ids:
+                continue
+            if whitelist and local_game.game_title not in whitelist:
+                continue
+            self.persistent_cache.setdefault(local_game.game_id, {"title": local_game.game_title, "traits": []})
+            games.append(local_game)
+            known_ids.add(local_game.game_id)
+
         return games
 
     async def get_user_data(self):

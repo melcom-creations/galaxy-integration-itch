@@ -72,7 +72,11 @@ class localClientDbReader():
             license_type = LicenseType.FreeToPlay
             if can_be_bought and min_price > 0:
                 license_type = LicenseType.SinglePurchase
-            games.append(Game(game_id=game[0], game_title=game[2], dlcs=None, license_info=LicenseInfo(license_type)))
+            # game_id must be a string, matching the type used everywhere else
+            # (e.g. the ids returned by the itch.io web API). Mixing int and
+            # str ids for the same game prevented Galaxy from reliably
+            # matching local install state to the owned-games catalog entry.
+            games.append(Game(game_id=str(game[0]), game_title=game[2], dlcs=None, license_info=LicenseInfo(license_type)))
             logging.debug(f"Built {game[0]} ({game[2]})")
 
         self.mylocal_game_ids = [x.game_id for x in games]
