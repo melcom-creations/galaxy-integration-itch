@@ -1,74 +1,143 @@
 # itch.io Integration Plugin for GOG Galaxy 2.1+ (64-bit)
 
-This repository contains the itch.io integration plugin for the 64-bit version of GOG Galaxy 2.1+.
-
-The original community integration has been updated to work with the current 64-bit GOG Galaxy client and Python 3.13. In addition to compatibility improvements, this project includes dependency updates, bug fixes, stability improvements and ongoing maintenance.
+This repository contains the itch.io integration plugin for the native 64-bit version of GOG Galaxy 2.1+. It is based on the original community integration and has been updated for the current GOG Galaxy client and Python 3.13. The project includes modernized authentication, updated dependencies, compatibility fixes, stability improvements, and ongoing maintenance.
 
 ---
 
 ## ✨ Features
 
-* Compatible with GOG Galaxy 2.1+ (64-bit)
-* Python 3.13 support
-* Updated 64-bit dependencies
-* Improved stability and compatibility
-* Ongoing maintenance and bug fixes
+* Imports your owned itch.io games into GOG Galaxy
+* Includes installed itch.io games that do not have a claimed download key
+* Detects games installed through the itch.io desktop app
+* Launches installed games directly from GOG Galaxy
+* Tracks game time for games launched through the integration
+* Refreshes the local installation state automatically
+* Uses a personal itch.io API token without a Cloudflare-dependent login window
+* Supports GOG Galaxy 2.1+ 64-bit and Python 3.13
+* Includes updated dependencies, compatibility fixes, and stability improvements
 
 ---
 
 ## 📦 Installation
 
-### Standard Installation (Recommended)
+### Automatic Installation with Plugin Updater (Recommended)
 
-1. Close GOG Galaxy completely.
-2. Download the latest release from this repository.
-3. Open the following folder:
+The easiest way to install the itch.io integration is with the [melcom GOG Galaxy Plugin Updater](https://github.com/melcom-creations/galaxy-integrations-64bit/tree/main/tools/melcom-galaxy_plugin_updater). The updater detects existing integrations and can install any supported melcom plugins that are still missing.
+
+1. Download and extract the Plugin Updater.
+2. Double-click `update-plugins.bat`.
+3. Select your preferred language.
+4. Follow the displayed instructions.
+
+When updating an existing itch.io installation, the updater detects a personal token in `credentials.json`, creates an additional backup, and offers to restore the file after the update.
+
+### Manual Installation
+
+1. Close GOG Galaxy completely and make sure it is no longer running in the system tray.
+2. Download the latest release package from this repository.
+3. Extract the ZIP archive directly into:
 
 ```text
 %localappdata%\GOG.com\Galaxy\plugins\installed\
 ```
 
-1. Extract the ZIP archive **directly into this folder**.
-
-The resulting directory structure **must** look like this:
+The resulting directory structure must look like this:
 
 ```text
 %localappdata%\GOG.com\Galaxy\plugins\installed\
 └── itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\
     ├── manifest.json
     ├── itch.py
+    ├── credentials.json
+    ├── setup.html
     ├── README.md
     └── ...
 ```
 
-1. Start GOG Galaxy.
+4. Complete the mandatory one-time setup below.
 
 ---
 
-## 🔄 Resetting the Plugin Database (Recommended)
+## ⚠️ Mandatory One-Time Setup
 
-If the plugin behaves unexpectedly after an update, resetting the local plugin database is recommended.
+The plugin requires the itch.io desktop app and a personal itch.io API token. When no valid token is available, GOG Galaxy displays the bundled setup guide after you click **Connect**. English and German versions of the guide are included with the plugin.
 
-1. Open `C:\ProgramData\GOG.com\Galaxy\storage\plugins\` and find the files starting with `itch_` and ending in `-storage.db`.
-2. Rename each by appending `.old` (e.g. `itch_xxxxxxxxx-storage.db` -> `itch_xxxxxxxxx-storage.db.old`).
-3. Start GOG Galaxy again and reconnect the itch.io integration if necessary.
+### Installing the itch.io Desktop App
 
-### 🚀 First Start and Initial Sync (Important)
-
-For a clean first run after installing or updating the plugin:
-
-1. Close GOG Galaxy.
-2. Open this folder:
+1. Download and install the [itch.io desktop app](https://itch.io/app).
+2. Start the app and sign in with your itch.io account.
+3. Keep the app open until its local database has been created at:
 
 ```text
-C:\ProgramData\GOG.com\Galaxy\storage\plugins\
+%appdata%\itch\db\butler.db
 ```
 
-1. If an `itch_...-storage.db` file exists there, delete it.
+The plugin reads installed games from this database.
+
+### Creating Your Personal API Token
+
+1. Open the following authorization link in your regular web browser, not inside GOG Galaxy:
+
+   [Authorize GOG Galaxy Integration](https://itch.io/user/oauth?client_id=3821cecdd58ae1a920be15f6aa479f7e&scope=profile&response_type=token&redirect_uri=http%3A%2F%2F127.0.0.1%3A7157%2Fgogg2itchintegration)
+
+2. Sign in to itch.io and select **Authorize GOG Galaxy Integration**.
+3. The browser will redirect to an error page because no local web server is running at the redirect address. This is expected.
+4. Copy the complete token value shown after `access_token=` in the browser address bar:
+
+```text
+http://127.0.0.1:7157/gogg2itchintegration#access_token=YOUR_TOKEN_HERE
+```
+
+5. Open the existing `credentials.json` file located at:
+
+```text
+%localappdata%\GOG.com\Galaxy\plugins\installed\itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\credentials.json
+```
+
+6. Insert your token and save the file:
+
+```json
+{
+  "access_token": "YOUR_TOKEN_HERE"
+}
+```
+
+7. Fully close and reopen GOG Galaxy.
+8. Open **Settings -> Integrations -> itch.io** and click **Connect**.
+
+> ⚠️ Keep your API token private. Never publish `credentials.json`, send it to another person, or commit it to a public repository. If the token stops working, repeat the authorization steps and replace it with a newly generated token.
+
+---
+
+## 🚀 First Start and Initial Sync
+
+For the first synchronization after installing, updating, or configuring the plugin:
+
+1. Start the itch.io desktop app and keep it open.
 2. Start GOG Galaxy.
-3. Start the itch app and keep it open.
-4. In GOG Galaxy, open the account menu (top-right) and click **Sync integrations**.
-5. Wait until sync finishes.
+3. Connect the itch.io integration through **Settings -> Integrations** if necessary.
+4. Open the account menu in the top-right corner and select **Sync integrations**.
+5. Wait until the synchronization has finished.
+
+Purchased games with claimed download keys are imported through the itch.io API. Games installed through the itch.io desktop app can also appear even if they were free downloads, jam entries, or otherwise never received a claimed download key.
+
+---
+
+## 🔄 Resetting the Plugin Database (Troubleshooting)
+
+Reset the local plugin database only if the integration behaves unexpectedly or synchronization problems continue after restarting both applications.
+
+1. Close GOG Galaxy completely.
+2. Open `C:\ProgramData\GOG.com\Galaxy\storage\plugins\`.
+3. Find every file starting with `itch_` and ending in `-storage.db`.
+4. Rename each matching file by appending `.old`, for example:
+
+   `itch_xxxxxxxxx-storage.db` -> `itch_xxxxxxxxx-storage.db.old`
+
+5. Start the itch.io desktop app and keep it open.
+6. Start GOG Galaxy and reconnect the itch.io integration if necessary.
+7. Open the account menu in the top-right corner and select **Sync integrations**.
+8. Wait until the synchronization has finished.
 
 ---
 
@@ -78,15 +147,17 @@ Do **not** place backup copies of this plugin inside the `plugins\installed` dir
 
 GOG Galaxy scans every folder inside this directory during startup. Duplicate plugin folders can lead to GUID conflicts or cause Galaxy to load an outdated version of the plugin.
 
+Never share `credentials.json` with another person. This file can contain your personal itch.io API token.
+
 ---
 
 ## 🙏 Credits
 
-**Original Plugin Author**
-Tauqua
+**Original Plugin Author**  
+Tauqua  
 [Tauqua's original itch.io integration](https://github.com/tauqua/gog-galaxy-itch.io)
 
-**64-bit Port, Setup Modernization & Continued Development**
+**64-bit Port, Setup Modernization and Continued Development**  
 melcom
 
 ---
