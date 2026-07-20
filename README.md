@@ -52,7 +52,7 @@ The resulting directory structure must look like this:
     └── ...
 ```
 
-4. Complete the mandatory one-time setup below.
+**Next step:** Complete the mandatory one-time setup below.
 
 > [!IMPORTANT]
 > Do not place backup copies of this plugin inside the `plugins\installed` directory. GOG Galaxy scans every folder inside this directory during startup, so duplicate plugin folders can cause GUID conflicts or load an outdated version.
@@ -85,23 +85,23 @@ The plugin reads installed games from this database.
 3. The browser will redirect to an error page because no local web server is running at the redirect address. This is expected.
 4. Copy the complete token value shown after `access_token=` in the browser address bar:
 
-```text
-http://127.0.0.1:7157/gogg2itchintegration#access_token=YOUR_TOKEN_HERE
-```
+   ```text
+   http://127.0.0.1:7157/gogg2itchintegration#access_token=YOUR_TOKEN_HERE
+   ```
 
 5. Open the existing `credentials.json` file located at:
 
-```text
-%localappdata%\GOG.com\Galaxy\plugins\installed\itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\credentials.json
-```
+   ```text
+   %localappdata%\GOG.com\Galaxy\plugins\installed\itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\credentials.json
+   ```
 
 6. Insert your token and save the file:
 
-```json
-{
-  "access_token": "YOUR_TOKEN_HERE"
-}
-```
+   ```json
+   {
+     "access_token": "YOUR_TOKEN_HERE"
+   }
+   ```
 
 7. Fully close and reopen GOG Galaxy.
 8. Open **Settings -> Integrations -> itch.io** and click **Connect**.
