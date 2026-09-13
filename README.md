@@ -12,7 +12,8 @@ This plugin imports your itch.io library into GOG Galaxy 2.1+ 64-bit. Based on t
 * Launches installed games directly from GOG Galaxy
 * Tracks game time for games launched through the integration
 * Refreshes the local installation state automatically
-* Uses a personal itch.io API token without a Cloudflare-dependent login window
+* Accepts the personal itch.io API token directly in the Galaxy setup window
+* Stores authentication outside the plugin folder with Windows DPAPI protection
 
 ---
 
@@ -27,7 +28,7 @@ Use the [melcom GOG Galaxy Plugin Updater](https://github.com/melcom-creations/g
 3. Select your preferred language.
 4. Follow the displayed instructions.
 
-When updating an existing itch.io installation, the updater detects a personal token in `credentials.json`, creates an additional backup, and offers to restore the file after the update.
+Authentication is stored outside the plugin folder, so plugin updates do not overwrite or need to restore the personal token.
 
 ### Manual Installation
 
@@ -46,7 +47,10 @@ The resulting directory structure must look like this:
 └── itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\
     ├── manifest.json
     ├── itch.py
-    ├── credentials.json
+    ├── auth.py
+    ├── auth_server.py
+    ├── auth_storage.py
+    ├── windows_dpapi.py
     ├── setup.html
     ├── README.md
     └── ...
@@ -61,7 +65,7 @@ The resulting directory structure must look like this:
 
 ## ⚠️ Mandatory One-Time Setup
 
-The plugin requires the itch.io desktop app and a personal itch.io API token. When no valid token is available, GOG Galaxy displays the bundled setup guide after you click **Connect**. English and German versions of the guide are included with the plugin.
+The plugin requires the itch.io desktop app and a personal itch.io API token. When no valid token is available, GOG Galaxy displays the bundled setup guide after you click **Connect**. The external directory and `auth.json` setup marker are created automatically at that moment. English and German versions of the guide are included with the plugin.
 
 ### Installing the itch.io Desktop App
 
@@ -83,30 +87,27 @@ The plugin reads installed games from this database.
 
 2. Sign in to itch.io and select **Authorize GOG Galaxy Integration**.
 3. The browser will redirect to an error page because no local web server is running at the redirect address. This is expected.
-4. Copy the complete token value shown after `access_token=` in the browser address bar:
+4. Copy the complete address from the browser address bar or only the token value shown after `access_token=`:
 
    ```text
    http://127.0.0.1:7157/gogg2itchintegration#access_token=YOUR_TOKEN_HERE
    ```
 
-5. Open the existing `credentials.json` file located at:
+5. Open **Settings -> Integrations -> itch.io** in GOG Galaxy and click **Connect**.
+6. Paste the complete callback address or token into the displayed setup field.
+7. Click **Save and Connect**. The plugin verifies the token, stores it securely, and completes the connection automatically. A Galaxy restart is not required.
 
-   ```text
-   %localappdata%\GOG.com\Galaxy\plugins\installed\itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\credentials.json
-   ```
+The authentication file is stored outside the plugin directory at:
 
-6. Insert your token and save the file:
+```text
+%localappdata%\melcom-creations\GOG Galaxy Integrations\itch.io\auth.json
+```
 
-   ```json
-   {
-     "access_token": "YOUR_TOKEN_HERE"
-   }
-   ```
+On the first Connect click, this file contains only a credential-free setup marker. After successful verification, the plugin replaces it atomically with the token protected by Windows DPAPI for the current Windows user. The token is not stored in the plugin folder.
 
-7. Fully close and reopen GOG Galaxy.
-8. Open **Settings -> Integrations -> itch.io** and click **Connect**.
+Existing installations with the old `credentials.json` format are migrated automatically after the token has been validated. The legacy file is removed only after the protected external file has been written and read back successfully.
 
-> ⚠️ Keep your API token private. Never publish `credentials.json`, send it to another person, or commit it to a public repository. If the token stops working, repeat the authorization steps and replace it with a newly generated token.
+> ⚠️ Keep your API token private. Never publish `auth.json`, send it to another person, or commit it to a public repository. If the token stops working, close GOG Galaxy, delete the external `auth.json`, and click **Connect** again. The plugin recreates the directory and setup marker automatically.
 
 ---
 

@@ -4,6 +4,23 @@ All notable changes to this plugin will be documented in this file.
 
 ---
 
+## Version 2.1.6-64bit
+
+### Added for Version 2.1.6-64bit
+
+- **Direct setup input:** The Galaxy setup window now accepts either the complete itch.io callback address or the API token. Manual editing of plugin files and a Galaxy restart are no longer required.
+- **External authentication storage:** On the first Connect click, the plugin creates `%LOCALAPPDATA%\melcom-creations\GOG Galaxy Integrations\itch.io\auth.json`. The initial file is a credential-free setup marker.
+- **Windows DPAPI protection:** After itch.io verifies the token, it is stored in `auth.json` encrypted for the current Windows account. Atomic writes and an immediate read-back check protect against incomplete or unusable files.
+- **Loopback-only setup service:** The input form is served on a temporary IPv4 loopback port and protected by a per-session nonce. Only its exact completion address can finish the Galaxy login step.
+
+### Changed for Version 2.1.6-64bit
+
+- **Authentication separated from plugin files:** New logins are no longer stored in the plugin directory or retained in Galaxy's credential store.
+- **Automatic legacy migration:** A valid token from the previous `credentials.json` format or Galaxy credential cache is migrated to the protected external file. The legacy plugin file is removed only after successful validation, encryption, and read-back verification.
+- **Setup and documentation updated:** `setup.html`, `setupDE.html`, and `README.md` now describe the direct input flow, external storage location, reset procedure, and automatic directory creation.
+
+---
+
 ## Version 2.1.5-64bit
 
 ### Overview for Version 2.1.5-64bit
