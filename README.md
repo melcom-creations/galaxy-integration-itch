@@ -2,7 +2,9 @@
 
 This plugin imports your itch.io library into GOG Galaxy 2.1+ 64-bit. Based on the original community integration, it has been updated for the current GOG Galaxy client and Python 3.13, with modernized token-based authentication.
 
----
+The steps below are for Windows. Dependencies are bundled; no separate Python installation is needed.
+
+[Installation](#-installation) | [First Start](#-first-start-and-initial-sync) | [Troubleshooting](#-troubleshooting) | [Support & Feedback](#-support--feedback)
 
 ## ✨ Features
 
@@ -15,59 +17,44 @@ This plugin imports your itch.io library into GOG Galaxy 2.1+ 64-bit. Based on t
 * Accepts the personal itch.io API token directly in the Galaxy setup window
 * Stores authentication outside the plugin folder with Windows DPAPI protection
 
----
-
 ## 📦 Installation
 
-### Automatic Installation with Plugin Updater (Recommended)
+### 🔄 Automatic Installation with Plugin Updater (Recommended)
 
-Use the [melcom GOG Galaxy Plugin Updater](https://github.com/melcom-creations/galaxy-integrations-64bit/tree/main/tools/melcom-galaxy_plugin_updater) to install or update the integration automatically.
+Use the [melcom GOG Galaxy Plugin Updater](https://github.com/melcom-creations/galaxy-integrations-64bit/tree/main/tools/melcom-galaxy_plugin_updater) to install or update the integration.
 
 1. Download and extract the Plugin Updater.
 2. Double-click `update-plugins.bat`.
-3. Select your preferred language.
-4. Follow the displayed instructions.
+3. Select your preferred language and follow the displayed instructions.
 
-Authentication is stored outside the plugin folder, so plugin updates do not overwrite or need to restore the personal token.
+The personal API token is stored outside the plugin folder. Plugin updates do not overwrite this configuration or require it to be restored.
 
-### Manual Installation
+### 📂 Manual Installation
 
 1. Close GOG Galaxy completely, including the system tray application.
-2. Download the latest release package from this repository.
-3. Extract the ZIP archive directly into:
+2. Download the [latest release package](https://github.com/melcom-creations/galaxy-integration-itch/releases/latest).
+3. Extract the plugin folder from the ZIP archive into:
+
+   ```text
+   %localappdata%\GOG.com\Galaxy\plugins\installed\
+   ```
+
+Place `manifest.json` directly inside this folder, without an extra nested plugin folder:
 
 ```text
-%localappdata%\GOG.com\Galaxy\plugins\installed\
+%localappdata%\GOG.com\Galaxy\plugins\installed\itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\
 ```
-
-The resulting directory structure must look like this:
-
-```text
-%localappdata%\GOG.com\Galaxy\plugins\installed\
-└── itch_2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b\
-    ├── manifest.json
-    ├── itch.py
-    ├── auth.py
-    ├── auth_server.py
-    ├── auth_storage.py
-    ├── windows_dpapi.py
-    ├── setup.html
-    ├── README.md
-    └── ...
-```
-
-**Next step:** Complete the mandatory one-time setup below.
 
 > [!IMPORTANT]
 > Do not place backup copies of this plugin inside the `plugins\installed` directory. GOG Galaxy scans every folder inside this directory during startup, so duplicate plugin folders can cause GUID conflicts or load an outdated version.
 
----
+**Next step:** Continue with [One-Time Setup (Required)](#-one-time-setup-required), then [First Start and Initial Sync](#-first-start-and-initial-sync).
 
-## ⚠️ Mandatory One-Time Setup
+## ⚠️ One-Time Setup (Required)
 
-The plugin requires the itch.io desktop app and a personal itch.io API token. When no valid token is available, GOG Galaxy displays the bundled setup guide after you click **Connect**. The external directory and `auth.json` setup marker are created automatically at that moment. English and German versions of the guide are included with the plugin.
+The plugin requires the itch.io desktop app and a personal itch.io API token. When no valid token is available, GOG Galaxy displays the bundled setup guide after you click **Connect**. English and German versions of the guide are included with the plugin.
 
-### Installing the itch.io Desktop App
+### 📦 Installing the itch.io Desktop App
 
 1. Download and install the [itch.io desktop app](https://itch.io/app).
 2. Start the app and sign in with your itch.io account.
@@ -79,7 +66,7 @@ The plugin requires the itch.io desktop app and a personal itch.io API token. Wh
 
 The plugin reads installed games from this database.
 
-### Creating Your Personal API Token
+### 🔑 Creating Your Personal API Token
 
 1. Open the following authorization link in your regular web browser, not inside GOG Galaxy:
 
@@ -97,19 +84,19 @@ The plugin reads installed games from this database.
 6. Paste the complete callback address or token into the displayed setup field.
 7. Click **Save and Connect**. The plugin verifies the token, stores it securely, and completes the connection automatically. A Galaxy restart is not required.
 
-The authentication file is stored outside the plugin directory at:
+### 🔒 Token Storage and Replacement
+
+The setup creates the external directory and an `auth.json` setup marker automatically. The authentication file is stored at:
 
 ```text
 %localappdata%\melcom-creations\GOG Galaxy Integrations\itch.io\auth.json
 ```
 
-On the first Connect click, this file contains only a credential-free setup marker. After successful verification, the plugin replaces it atomically with the token protected by Windows DPAPI for the current Windows user. The token is not stored in the plugin folder.
+On the first Connect click, this file contains only a credential-free setup marker. After successful verification, the plugin replaces it with the token protected by Windows DPAPI for the current Windows user. The token is not stored in the plugin folder.
 
 Existing installations with the old `credentials.json` format are migrated automatically after the token has been validated. The legacy file is removed only after the protected external file has been written and read back successfully.
 
 > ⚠️ Keep your API token private. Never publish `auth.json`, send it to another person, or commit it to a public repository. If the token stops working, close GOG Galaxy, delete the external `auth.json`, and click **Connect** again. The plugin recreates the directory and setup marker automatically.
-
----
 
 ## 🚀 First Start and Initial Sync
 
@@ -123,54 +110,30 @@ For the first synchronization after installing, updating, or configuring the plu
 
 Purchased games with claimed download keys are imported through the itch.io API. Games installed through the itch.io desktop app can also appear even if they were free downloads, jam entries, or otherwise never received a claimed download key.
 
----
+## 🛠️ Troubleshooting
 
-## 🔄 Resetting the Plugin Database (Troubleshooting)
+Restart Galaxy and the store app and try one synchronization. If the problem remains, collect a fresh log. A database reset is not required for this.
 
-Reset the local plugin database if synchronization problems continue after restarting both applications.
-
-1. Close GOG Galaxy completely.
-2. Open `C:\ProgramData\GOG.com\Galaxy\storage\plugins\`.
-3. Find every file starting with `itch_` and ending in `-storage.db`.
-4. Rename each matching file by appending `.old`, for example:
-
-   `itch_xxxxxxxxx-storage.db` -> `itch_xxxxxxxxx-storage.db.old`
-
-5. Start the itch.io desktop app and keep it open.
-6. Start GOG Galaxy, reconnect the integration if necessary, select **Sync integrations** from the account menu, and wait for synchronization to finish.
-
----
-
-## 🛠️ What to Do If the Plugin Has Problems
-
-If the database reset above does not resolve the problem, create a clean session with fresh diagnostic files before contacting me. The reset procedure preserves the previous database as a `.old` file; the steps below remove the active database so the issue can be reproduced from a clean state.
+### 🧪 Create a Fresh Diagnostic Log
 
 1. Close GOG Galaxy completely, including the system tray application.
-2. Open the following directory and delete the existing log files:
+2. Open `%ProgramData%\GOG.com\Galaxy\logs\`. Move the existing `plugin-itch-2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b.log` to a backup folder outside this directory, if present. Leave other logs in place.
+3. Start the itch.io desktop app. Start Galaxy, reproduce the problem once, then close Galaxy completely to finish writing the log.
+4. Send the newly created plugin log, not the entire folder. Include the plugin and Galaxy versions, your steps, the expected and actual result, and whether the problem can be reproduced.
 
-   ```text
-   %ProgramData%\GOG.com\Galaxy\logs
-   ```
+See [Support & Feedback](#-support--feedback) for contact options.
 
-3. Open the plugin storage directory:
+### 🔄 Reset Plugin Storage (Last Resort)
 
-   ```text
-   C:\ProgramData\GOG.com\Galaxy\storage\plugins
-   ```
+Use this only if restarting and synchronizing do not help, or when requested for troubleshooting. Cached library data and local playtime may be lost; signing in again may be required. Keep the backup. The separate `auth.json` file remains unchanged.
 
-   Delete only the active itch.io database file starting with `itch_` and ending in `-storage.db`. Do not delete database files belonging to other integrations. If you are unsure which file is correct, do not delete anything from this directory.
-4. Start the itch.io desktop app and keep it open. Start GOG Galaxy, reproduce the problem, and then close GOG Galaxy completely so the new log is fully written.
-5. Return to the logs directory and locate the newly created itch.io plugin log:
+1. Close GOG Galaxy completely, including the system tray application.
+2. Open `%ProgramData%\GOG.com\Galaxy\storage\plugins\`.
+3. Find the active `itch_...-storage.db` file for your Galaxy account. If unsure which file is correct, stop. Leave other integrations' databases unchanged.
+4. Append `.old` to its name. If that backup already exists, use an unused suffix; never overwrite it.
+5. Start the itch.io desktop app. Start Galaxy, reconnect if necessary, and select **Sync integrations** once. Wait until it finishes.
 
-   ```text
-   plugin-itch-2df02142-4d8a-4a4b-9b6e-c3a0bc62f93b.log
-   ```
-
-Send only this log file, not the entire logs folder. Include the exact steps taken, the expected and actual result, and whether the problem can be reproduced.
-
-Without a fresh plugin log and a detailed description, I cannot reliably determine what is causing the problem. Once everything is ready, continue with [Support & Feedback](#-support--feedback) for contact options.
-
----
+To undo: close Galaxy, rename the new database to an unused backup name, then restore the saved database's original name. Never restore it while Galaxy is running.
 
 ## 🙏 Credits
 
@@ -180,8 +143,6 @@ Tauqua
 
 **64-bit Port, Setup Modernization and Continued Development**  
 melcom
-
----
 
 ## ❤️ Special Thanks
 
@@ -195,13 +156,11 @@ I want to take a moment to thank the people who kept me going during this intens
 
 Thank you both for having my back!
 
----
-
 ## 🤝 Support & Feedback
 
 **GitHub Issues are intentionally disabled.** Health-related limitations prevent me from reliably managing separate issue trackers across all of my plugin repositories.
 
-Before contacting me, follow **What to Do If the Plugin Has Problems** and prepare a fresh itch.io plugin log with a detailed description.
+Before contacting me, follow [Troubleshooting](#-troubleshooting) and prepare a fresh itch.io plugin log with a detailed description.
 
 * **GOG:** Send me a message or add me as a friend through my [GOG profile](https://www.gog.com/u/melcom).
 * **Email:** `melcom @ gmx.net`
